@@ -16,20 +16,20 @@ AVRDUDE=$(ARDUINO_HOME)bin/avrdude -C $(ARDUINO_HOME)etc/avrdude.conf -F -V
 RM=rm -f
 
 .PHONY: all
-all: blink.hex
+all: main.hex
 
-blink.hex: blink.elf
+main.hex: main.elf
 
-blink.elf: blink.s
+main.elf: main.s
 
-blink.s: blink.c
+main.s: main.c
 
 .PHONY: clean
 clean:
-	$(RM) blink.elf blink.hex blink.s
+	$(RM) main.elf main.hex main.s
 
 .PHONY: upload
-upload: blink.hex
+upload: main.hex
 	$(AVRDUDE) -c $(PROTOCOL) -p $(PART) -P $(PORT) -b $(BAUD) -U flash:w:$<
 
 %.elf: %.s ; $(CC) $(CFLAGS) -s -o $@ $<
