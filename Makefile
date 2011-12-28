@@ -90,8 +90,11 @@ PROJECTNAME=irrigarduino
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=main.cpp
-# DS1302.cpp 
+PRJSRC=main.cpp \
+       DS1302.cpp \
+       bit_helpers.c \
+       HardwareSerial.cpp \
+       Print.cpp
  
 # additional includes (e.g. -I/path/to/mydir)
 #INC=-I/path/to/include
@@ -124,7 +127,8 @@ AVRDUDE_PROGRAMMERID=stk500v1
 # port--serial or parallel port to which your 
 # hardware programmer is attached
 #
-AVRDUDE_PORT=/dev/tty.usbmodemfd131
+#AVRDUDE_PORT=/dev/tty.usbmodemfd131
+AVRDUDE_PORT=$(PORT)
  
 # Clock speed of the MCU
 F_CPU=16000000UL
@@ -152,10 +156,12 @@ CFLAGS=-I. $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-funsigned-bitfields -funsigned-char    \
 	-Wall -Wstrict-prototypes               \
 	-Wa,-ahlms=$(firstword                  \
+	-ffunction-sections -fdata-section      \
 	$(filter %.lst, $(<:.c=.lst)))
  
 # c++ specific flags
-CPPFLAGS=-fno-exceptions               \
+CPPFLAGS=-fno-exceptions \
+  -ffunction-sections -fdata-sections \
 	-Wa,-ahlms=$(firstword         \
 	$(filter %.lst, $(<:.cpp=.lst))\
 	$(filter %.lst, $(<:.cc=.lst)) \
@@ -169,7 +175,7 @@ ASMFLAGS =-I. $(INC) -mmcu=$(MCU)        \
  
  
 # linker
-LDFLAGS=-Wl,-Map,$(TRG).map -mmcu=$(MCU) \
+LDFLAGS=-Wl,--gc-sections,-Map,$(TRG).map -mmcu=$(MCU) \
 	-lm $(LIBS)
  
 ##### executables ####
@@ -248,7 +254,7 @@ $(DUMPTRG): $(TRG)
  
  
 $(TRG): $(OBJDEPS) 
-	$(CC) $(LDFLAGS) -o $(TRG) $(OBJDEPS)
+	$(CC) -Os $(LDFLAGS) -o $(TRG) $(OBJDEPS)
  
  
 #### Generating assembly ####
