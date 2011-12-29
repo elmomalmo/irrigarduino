@@ -1,7 +1,6 @@
-#include <stdint.h>
-#include <util/delay.h>
-#include "bit_helpers.h"
+#include <Arduino.h>
 #include "DS1302.h"
+
 
 /*** Time definitions ***/
 
@@ -27,43 +26,21 @@ Time::Time()
 
 /*** DS1302 definitions ***/
 
-DS1302::DS1302(volatile uint8_t *ddr, volatile uint8_t *port, volatile uint8_t *pin,
-                uint8_t ce_bit, uint8_t io_bit, uint8_t sclk_bit)
+DS1302::DS1302(uint8_t ce_pin, uint8_t io_pin, uint8_t sclk_pin)
 {
-  
-  _ddr = *ddr;
-  _port = *port;
-  _pin = *pin;
+  _ce_pin = ce_pin;
+  _io_pin = io_pin;
+  _sclk_pin = sclk_pin;
 
-  _ce_bit = ce_bit;
-  _io_bit = io_bit;
-  _sclk_bit = sclk_bit;
-
-  _ddr |= ce_bit; //pinMode(ce_bit, OUTPUT);
-  _ddr |= sclk_bit;  //pinMode(sclk_bit, OUTPUT);
+  pinMode(ce_pin, OUTPUT);
+  pinMode(sclk_pin, OUTPUT);
 }
 
-//WTF does this do?
-void DS1302::_shiftOut(uint8_t dataBit, uint8_t clockBit, uint8_t bitOrder, uint8_t val)
-{
-  int i;
-  
-  for (i = 0; i < 8; i++)  {
-    if (bitOrder == LSBFIRST) {
-      digitalSetBit(&_port, dataBit, !!(val & (1 << i)));        //digitalWrite(dataPin, !!(val & (1 << i)));
-    } else {
-      digitalSetBit(&_port, dataBit, !!(val & (1 << (7 - i))));  //digitalWrite(dataPin, !!(val & (1 << (7 - i))));
-    }
-     
-    digitalSetBit(&_port, clockBit, HIGH);     //digitalWrite(clockPin, HIGH);
-    digitalSetBit(&_port, clockBit, LOW);     //digitalWrite(clockPin, LOW);    
-  }
-}
 
 void DS1302::_write_out(uint8_t value)
 {
-  digitalSetBit(&_ddr, _io_bit, HIGH);
-  _shiftOut(_io_bit, _sclk_bit, LSBFIRST, value); //TODO
+  pinMode(_io_pin, OUTPUT);
+  shiftOut(_io_pin, _sclk_pin, LSBFIRST, value);
 }
 
 
@@ -71,15 +48,15 @@ uint8_t DS1302::_read_in()
 {
   uint8_t input_value = 0;
   uint8_t bit = 0;
-  digitalSetBit(&_ddr, _io_bit, LOW);
+  pinMode(_io_pin, INPUT);
 
   for (int i = 0; i < 8; ++i) {
-    bit = digitalReadBit(&_port, _io_bit); //TODO
+    bit = digitalRead(_io_pin);
     input_value |= (bit << i);
 
-    digitalSetBit(&_port, _sclk_bit, HIGH);     //digitalWrite(_sclk_bit, HIGH);
-    _delay_us(1);                 //delayMicroseconds(1);
-    digitalSetBit(&_port, _sclk_bit, LOW);   //digitalWrite(_sclk_bit, LOW);
+    digitalWrite(_sclk_pin, HIGH);
+    delayMicroseconds(1);
+    digitalWrite(_sclk_pin, LOW);
   }
 
   return input_value;
@@ -132,13 +109,13 @@ uint8_t DS1302::read_register(reg_t reg)
   uint8_t reg_value;
   cmd_byte |= (reg << 1);
 
-  digitalSetBit(&_port, _sclk_bit, LOW);
-  digitalSetBit(&_port, _ce_bit, HIGH);
+  digitalWrite(_sclk_pin, LOW);
+  digitalWrite(_ce_pin, HIGH);
 
   _write_out(cmd_byte);
   reg_value = _read_in();
 
-  digitalSetBit(&_port, _ce_bit, LOW);
+  digitalWrite(_ce_pin, LOW);
 
   return reg_value;
 }
@@ -148,13 +125,13 @@ void DS1302::write_register(reg_t reg, uint8_t value)
 {
   uint8_t cmd_byte = (128 | (reg << 1));
 
-  digitalSetBit(&_port, _sclk_bit, LOW);
-  digitalSetBit(&_port, _ce_bit, HIGH);
+  digitalWrite(_sclk_pin, LOW);
+  digitalWrite(_ce_pin, HIGH);
 
   _write_out(cmd_byte);
   _write_out(value);
 
-  digitalSetBit(&_port, _ce_bit, LOW);
+  digitalWrite(_ce_pin, LOW);
 }
 
 

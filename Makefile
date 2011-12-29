@@ -90,15 +90,30 @@ PROJECTNAME=irrigarduino
 # (list all files to compile, e.g. 'a.c b.cpp as.S'):
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
-PRJSRC=main.cpp \
+PRJSRC=irrigarduino.pde.cpp \
        DS1302.cpp \
-       bit_helpers.c \
-       HardwareSerial.cpp \
-       Print.cpp
- 
+       arduino/core/CDC.cpp \
+       arduino/core/HardwareSerial.cpp \
+       arduino/core/HID.cpp \
+       arduino/core/IPAddress.cpp \
+       arduino/core/main.cpp \
+       arduino/core/new.cpp \
+       arduino/core/Print.cpp \
+       arduino/core/Stream.cpp \
+       arduino/core/Tone.cpp \
+       arduino/core/USBCore.cpp \
+       arduino/core/WInterrupts.c \
+       arduino/core/wiring.c \
+       arduino/core/wiring_analog.c \
+       arduino/core/wiring_digital.c \
+       arduino/core/wiring_pulse.c \
+       arduino/core/wiring_shift.c \
+       arduino/core/WMath.cpp \
+       arduino/core/WString.cpp
+
 # additional includes (e.g. -I/path/to/mydir)
 #INC=-I/path/to/include
-INC=
+INC=-Iarduino/core -Iarduino/variants/standard
 
 # libraries to link in (e.g. -lmylib)
 LIBS=
@@ -122,7 +137,7 @@ OPTLEVEL=s
 # one of the valid "-c PROGRAMMER-ID" values 
 # described in the avrdude info page.
 # 
-AVRDUDE_PROGRAMMERID=stk500v1
+AVRDUDE_PROGRAMMERID=arduino
  
 # port--serial or parallel port to which your 
 # hardware programmer is attached
@@ -156,7 +171,6 @@ CFLAGS=-I. $(INC) -g -mmcu=$(MCU) -O$(OPTLEVEL) \
 	-funsigned-bitfields -funsigned-char    \
 	-Wall -Wstrict-prototypes               \
 	-Wa,-ahlms=$(firstword                  \
-	-ffunction-sections -fdata-section      \
 	$(filter %.lst, $(<:.c=.lst)))
  
 # c++ specific flags

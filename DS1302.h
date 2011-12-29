@@ -28,8 +28,7 @@ SUCH DAMAGE.
 #ifndef DS1302_h
 #define DS1302_h
 
-#include <stdint.h>
-#include "bit_helpers.h"
+#include <Arduino.h>
 
 /**
  * Convenience register constants
@@ -99,17 +98,11 @@ public:
    * Constructor.
    *
    * Args:
-   *   ddr: pointer to data direction register
-   *   port: pointer to data register
-   *   pin: pointer to input pins register
-   *   ce_bit: CE pin number
-   *   io_bit: IO pin number
-   *   sclk_bit: SCLK pin number
-   *
-   * Note: If any of the bits supplied are capable of PWM, disable it for those bits
+   *   ce_pin: CE pin number
+   *   io_pin: IO pin number
+   *   sclk_pin: SCLK pin number
    */
-  DS1302(volatile uint8_t *ddr, volatile uint8_t *port, volatile uint8_t *pin,
-          uint8_t ce_bit, uint8_t io_bit, uint8_t sclk_bit);
+  DS1302(uint8_t ce_pin, uint8_t io_pin, uint8_t sclk_pin);
 
   /**
    * Read register byte value.
@@ -188,20 +181,14 @@ public:
   void time(Time t);
 
 private:
-  uint8_t _ddr;
-  uint8_t _port;
-  uint8_t _pin;
-  
-  uint8_t _ce_bit;
-  uint8_t _io_bit;
-  uint8_t _sclk_bit;
-
-  void _shiftOut(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder, uint8_t val);
+  uint8_t _ce_pin;
+  uint8_t _io_pin;
+  uint8_t _sclk_pin;
 
   /**
    * Shift out a value to the IO pin.
    *
-   * Side effects: sets _io_bit as OUTPUT.
+   * Side effects: sets _io_pin as OUTPUT.
    *
    * Args:
    *   value: byte to shift out
@@ -211,7 +198,7 @@ private:
   /**
    * Read in a byte from the IO pin.
    *
-   * Side effects: sets _io_bit to INPUT.
+   * Side effects: sets _io_pin to INPUT.
    *
    * Returns:
    *   byte read in
