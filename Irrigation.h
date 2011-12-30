@@ -9,7 +9,7 @@ private:
   uint8_t _sensorPin;
 public:
   Reservoir(uint8_t sensorPin);
-  boolean isNotEmpty();
+  boolean isEmpty();
 };
 
 class Pump {
@@ -25,16 +25,18 @@ private:
 
 class Soil {
 public:
-  Soil(uint8_t sensorPin, uint8_t thresholdPin);
+  Soil(uint8_t sensorPin, uint8_t calibrationPin);
   boolean isTooDry();
 private:
   uint8_t _sensorPin;
-  uint8_t _thresholdPin;
+  uint8_t _calibrationPin;
 };
 
 class Irrigation {
 public:
   Irrigation();
+
+  void init();
 
   /**
    * This method is intended to be run on every loop iteration. If the
@@ -44,6 +46,8 @@ public:
   void pollIrrigationStatus();
 
 private:
+  uint8_t _indicatorPin;
+  uint8_t _waterWarningPin;
   DS1302 clock;
   Reservoir reservoir;
   Pump pump;
