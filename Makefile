@@ -92,6 +92,7 @@ PROJECTNAME=irrigarduino
 # (NOT .s !!!) for assembly source code files.
 PRJSRC=irrigarduino.pde.cpp \
        DS1302.cpp \
+			 Irrigation.cpp \
        arduino/core/CDC.cpp \
        arduino/core/HardwareSerial.cpp \
        arduino/core/HID.cpp \

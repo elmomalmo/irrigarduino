@@ -9,6 +9,7 @@ http://quadpoint.org/projects/arduino-ds1302
 #include <stdio.h>
 #include <string.h>
 #include <DS1302.h>
+#include <Irrigation.h>
 #include <Arduino.h>
 
 /* Set the appropriate digital I/O pin connections */
@@ -22,7 +23,7 @@ char day[10];
 
 /* Create a DS1302 object */
 DS1302 rtc(CE_PIN, IO_PIN, SCLK_PIN);
-
+Irrigation irrigation;
 
 void print_time()
 {
@@ -70,26 +71,11 @@ void loop();
 
 void setup()
 {
-  Serial.begin(9600);
-
-  /* Initialize a new chip by turning off write protection and clearing the
-     clock halt flag. These methods needn't always be called. See the DS1302
-     datasheet for details. */
-  rtc.write_protect(false);
-  rtc.halt(false);
-
-  /* Make a new time object to set the date and time */
-  /*   Tuesday, May 19, 2009 at 21:16:37.            */
-  Time t(2011, 12, 29, 13, 30, 0, 5);
-
-  /* Set the time and date on the chip */
-  rtc.time(t);
 }
 
 
 /* Loop and print the time every second */
 void loop()
 {
-  print_time();
-  delay(1000);
+  irrigation.pollIrrigationStatus();
 }
