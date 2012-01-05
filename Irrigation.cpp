@@ -45,8 +45,13 @@ Soil::Soil(uint8_t sensorPin, uint8_t calibrationPin) {
 }
 
 boolean Soil::isTooDry() {
-  return true;
-  // return analogRead(_sensorPin) < analogRead(_calibrationPin);
+#ifdef DEBUG
+  Serial.print("Calibration: ");
+  Serial.println(analogRead(_calibrationPin));
+  Serial.print("Sensor: ");
+  Serial.println(analogRead(_sensorPin));
+#endif
+  return analogRead(_sensorPin) < analogRead(_calibrationPin);
 }
 
 // ============================================================
