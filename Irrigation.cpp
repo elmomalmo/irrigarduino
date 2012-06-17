@@ -5,13 +5,15 @@
 
 #define DEBUG 1
 
+uint8_t SOIL_DEBOUNCE = 50;
+
 Reservoir::Reservoir(uint8_t sensorPin) {
   _sensorPin = sensorPin;
   pinMode(_sensorPin, INPUT);
 }
 
 boolean Reservoir::isEmpty() {
-  return digitalRead(_sensorPin) == HIGH; //TODO find out whether sensor will be HIGH or LOW when empty
+  return digitalRead(_sensorPin) == LOW;
 }
 
 // ============================================================
@@ -54,6 +56,16 @@ boolean Soil::isTooDry() {
   return analogRead(_sensorPin) < analogRead(_calibrationPin);
 }
 
+boolean Soil::isWetEnough() {
+#ifdef DEBUG
+  Serial.print("Calibration + Debounce: ");
+  Serial.println(analogRead(_calibrationPin) + SOIL_DEBOUNCE);
+  Serial.print("Sensor: ");
+  Serial.println(analogRead(_sensorPin));
+#endif
+    return analogRead(_sensorPin) > (analogRead(_calibrationPin) + SOIL_DEBOUNCE);
+}
+
 // ============================================================
 
 Irrigation::Irrigation() :
@@ -75,9 +87,14 @@ void Irrigation::init() {
 }
 
 void Irrigation::pollIrrigationStatus() {
-  digitalWrite(_indicatorPin, HIGH);
+    boolean reservoirEmpty = reservoir.isEmpty();
+    boolean soilTooDry = soil.isTooDry();
+    boolean soilWetEnough = soil.isWetEnough();
+    boolean pumping = pump.isPumping();
 
-  if(reservoir.isEmpty()) {
+    digitalWrite(_indicatorPin, HIGH);
+
+  if(reservoirEmpty) {
 #ifdef DEBUG
     Serial.println("The water reservoir is empty");
 #endif
@@ -86,15 +103,16 @@ void Irrigation::pollIrrigationStatus() {
     digitalWrite(_waterWarningPin, LOW);
   }
   
-  if(!reservoir.isEmpty() && soil.isTooDry()) {
-    if(!pump.isPumping()) {
-      pump.start();
-    }
+  if(pumping) {
+      if(reservoirEmpty || soilWetEnough) {
+          pump.stop();
+      }
   } else {
-    if(pump.isPumping()) {
-      pump.stop();
-    }
+      if(!reservoirEmpty && soilTooDry) {
+          pump.start();
+      }
   }
+
   delay(10);
   digitalWrite(_indicatorPin, LOW);
 }

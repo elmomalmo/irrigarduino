@@ -1,5 +1,5 @@
 #ifndef IRRIGATION_h
-#define IRRIGATION_h
+#define IRRIGATION_h 1
 
 #include "DS1302.h"
 #include <Arduino.h>
@@ -27,6 +27,7 @@ class Soil {
 public:
   Soil(uint8_t sensorPin, uint8_t calibrationPin);
   boolean isTooDry();
+  boolean isWetEnough();
 private:
   uint8_t _sensorPin;
   uint8_t _calibrationPin;

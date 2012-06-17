@@ -16,7 +16,7 @@ uint8_t PUMP_CTRL_PIN = 11;
 uint8_t WATER_WRN_LED_PIN = 10;
 
 // Analog input pin attached to a potentiometer to calibrate the moisture sensor
-uint8_t MOISTURE_CALIB_PIN = A0;
+uint8_t MOISTURE_CALIB_PIN = A1;
 
 // Analog input pin attached to pointer sensor
-uint8_t MOISTURE_SENSOR_PIN = A1;
+uint8_t MOISTURE_SENSOR_PIN = A0;
