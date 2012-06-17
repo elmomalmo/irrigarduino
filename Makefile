@@ -92,6 +92,7 @@ PROJECTNAME=irrigarduino
 # (NOT .s !!!) for assembly source code files.
 PRJSRC=irrigarduino.pde.cpp \
        Irrigation.cpp \
+\
        arduino/core/CDC.cpp \
        arduino/core/HardwareSerial.cpp \
        arduino/core/HID.cpp \
@@ -109,11 +110,14 @@ PRJSRC=irrigarduino.pde.cpp \
        arduino/core/wiring_pulse.c \
        arduino/core/wiring_shift.c \
        arduino/core/WMath.cpp \
-       arduino/core/WString.cpp
+       arduino/core/WString.cpp \
+\
+       Wire/Wire.cpp \
+       Wire/utility/twi.cpp
 
 # additional includes (e.g. -I/path/to/mydir)
 #INC=-I/path/to/include
-INC=-Iarduino/core -Iarduino/variants/standard
+INC=-Iarduino/core -Iarduino/variants/standard -IWire -IWire/utility
 
 # libraries to link in (e.g. -lmylib)
 LIBS=

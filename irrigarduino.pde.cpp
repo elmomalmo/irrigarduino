@@ -4,6 +4,7 @@
 #include <string.h>
 #include <Irrigation.h>
 #include <Arduino.h>
+#include <Wire.h>
 
 Irrigation irrigation;
 
@@ -12,6 +13,7 @@ void loop();
 
 void setup()
 {
+    Wire.begin();
   irrigation.init();
 }
 
