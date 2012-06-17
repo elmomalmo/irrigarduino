@@ -113,7 +113,9 @@ PRJSRC=irrigarduino.pde.cpp \
        arduino/core/WString.cpp \
 \
        Wire/Wire.cpp \
-       Wire/utility/twi.cpp
+       Wire/utility/twi.cpp \
+\
+       RTClib/RTClib.cpp
 
 # additional includes (e.g. -I/path/to/mydir)
 #INC=-I/path/to/include
