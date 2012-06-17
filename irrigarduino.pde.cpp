@@ -2,7 +2,6 @@
 */
 #include <stdio.h>
 #include <string.h>
-#include <DS1302.h>
 #include <Irrigation.h>
 #include <Arduino.h>
 

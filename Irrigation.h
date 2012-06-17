@@ -1,7 +1,6 @@
 #ifndef IRRIGATION_h
 #define IRRIGATION_h 1
 
-#include "DS1302.h"
 #include <Arduino.h>
 
 class Reservoir {
@@ -49,7 +48,6 @@ public:
 private:
   uint8_t _indicatorPin;
   uint8_t _waterWarningPin;
-  DS1302 clock;
   Reservoir reservoir;
   Pump pump;
   Soil soil;

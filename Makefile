@@ -91,8 +91,7 @@ PROJECTNAME=irrigarduino
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
 PRJSRC=irrigarduino.pde.cpp \
-       DS1302.cpp \
-			 Irrigation.cpp \
+       Irrigation.cpp \
        arduino/core/CDC.cpp \
        arduino/core/HardwareSerial.cpp \
        arduino/core/HID.cpp \

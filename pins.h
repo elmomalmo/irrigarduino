@@ -1,7 +1,3 @@
-// DS1302 REal-time clock pins
-uint8_t CLOCK_CE_PIN   = 5;
-uint8_t CLOCK_IO_PIN   = 6;
-uint8_t CLOCK_SCLK_PIN = 7;
 
 // Pin for flashing on each polling cycle
 uint8_t POLL_LED_PIN = 13;

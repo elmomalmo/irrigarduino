@@ -1,5 +1,4 @@
 #include "Irrigation.h"
-#include "DS1302.h"
 #include <Arduino.h>
 #include "pins.h"
 
@@ -69,7 +68,6 @@ boolean Soil::isWetEnough() {
 // ============================================================
 
 Irrigation::Irrigation() :
-  clock(CLOCK_CE_PIN, CLOCK_IO_PIN, CLOCK_SCLK_PIN),
   reservoir(RES_SENSOR_PIN),
   pump(PUMP_CTRL_PIN),
   soil(MOISTURE_SENSOR_PIN, MOISTURE_CALIB_PIN) {
