@@ -13,13 +13,16 @@ public:
 
 class Pump {
 public:
-  Pump(uint8_t pumpControlPin);
+  Pump(uint8_t pumpControlPin, uint8_t valveControlPin);
   void start();
   void stop();
   boolean isPumping();
+  void openValve();
+  void closeValve();
 private:
   uint8_t _pumpCtrlPin;
   boolean _pumping;
+  uint8_t _valveCtrlPin;
 };
 
 class Soil {

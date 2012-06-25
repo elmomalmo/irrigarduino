@@ -17,11 +17,13 @@ boolean Reservoir::isEmpty() {
 
 // ============================================================
 
-Pump::Pump(uint8_t pumpCtrlPin) {
+Pump::Pump(uint8_t pumpCtrlPin, uint8_t valveCtrlPin) {
   _pumpCtrlPin = pumpCtrlPin;
+  _valveCtrlPin = valveCtrlPin;
   _pumping = false;
 
   pinMode(_pumpCtrlPin, OUTPUT);
+  pinMode(_valveCtrlPin, OUTPUT);
 }
 
 boolean Pump::isPumping() {
@@ -36,6 +38,14 @@ void Pump::start() {
 void Pump::stop() {
   digitalWrite(_pumpCtrlPin, LOW);
   _pumping = false;
+}
+
+void Pump::openValve() {
+  digitalWrite(_valveCtrlPin, HIGH);
+}
+
+void Pump::closeValve() {
+  digitalWrite(_valveCtrlPin, LOW);
 }
 
 // ============================================================
@@ -69,7 +79,7 @@ boolean Soil::isWetEnough() {
 
 Irrigation::Irrigation() :
   reservoir(RES_SENSOR_PIN),
-  pump(PUMP_CTRL_PIN),
+  pump(PUMP_CTRL_PIN, VALVE_CTRL_PIN),
   soil(MOISTURE_SENSOR_PIN, MOISTURE_CALIB_PIN) {
     _indicatorPin = POLL_LED_PIN;
     _waterWarningPin = WATER_WRN_LED_PIN;
@@ -104,9 +114,13 @@ void Irrigation::pollIrrigationStatus() {
   if(pumping) {
       if(reservoirEmpty || soilWetEnough) {
           pump.stop();
+
+          pump.closeValve();
       }
   } else {
       if(!reservoirEmpty && soilTooDry) {
+          pump.openValve();
+
           pump.start();
       }
   }
