@@ -91,46 +91,29 @@ PROJECTNAME=irrigarduino
 # Use .cc, .cpp or .C suffix for C++ files, use .S 
 # (NOT .s !!!) for assembly source code files.
 PRJSRC=irrigarduino.pde.cpp \
-        Irrigation.cpp \
-\
-        arduino/core/CDC.cpp \
-        arduino/core/HardwareSerial.cpp \
-        arduino/core/HID.cpp \
-        arduino/core/IPAddress.cpp \
-        arduino/core/main.cpp \
-        arduino/core/new.cpp \
-        arduino/core/Print.cpp \
-        arduino/core/Stream.cpp \
-        arduino/core/Tone.cpp \
-        arduino/core/USBCore.cpp \
-        arduino/core/WInterrupts.c \
-        arduino/core/wiring.c \
-        arduino/core/wiring_analog.c \
-        arduino/core/wiring_digital.c \
-        arduino/core/wiring_pulse.c \
-        arduino/core/wiring_shift.c \
-        arduino/core/WMath.cpp \
-        arduino/core/WString.cpp \
-\
-        Wire/Wire.cpp \
-        Wire/utility/twi.cpp \
-\
-        RTClib/RTClib.cpp \
-\
-        SD/SD.cpp \
-	    SD/File.cpp \
-	    SD/utility/Sd2Card.cpp \
-	    SD/utility/SdFile.cpp \
-	    SD/utility/SdVolume.cpp \
-
+       Irrigation.cpp \
+       arduino/core/CDC.cpp \
+       arduino/core/HardwareSerial.cpp \
+       arduino/core/HID.cpp \
+       arduino/core/IPAddress.cpp \
+       arduino/core/main.cpp \
+       arduino/core/new.cpp \
+       arduino/core/Print.cpp \
+       arduino/core/Stream.cpp \
+       arduino/core/Tone.cpp \
+       arduino/core/USBCore.cpp \
+       arduino/core/WInterrupts.c \
+       arduino/core/wiring.c \
+       arduino/core/wiring_analog.c \
+       arduino/core/wiring_digital.c \
+       arduino/core/wiring_pulse.c \
+       arduino/core/wiring_shift.c \
+       arduino/core/WMath.cpp \
+       arduino/core/WString.cpp
 
 # additional includes (e.g. -I/path/to/mydir)
 #INC=-I/path/to/include
-INC=-Iarduino/core -Iarduino/variants/standard \
-    -IWire -IWire/utility \
-    -IRTClib \
-    -ISD \
-    -ISD/utility
+INC=-Iarduino/core -Iarduino/variants/standard
 
 # libraries to link in (e.g. -lmylib)
 LIBS=
