@@ -20,5 +20,4 @@ void setup()
 void loop()
 {
   irrigation.pollIrrigationStatus();
-  delay(2000);
 }

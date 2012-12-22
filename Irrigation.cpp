@@ -50,9 +50,18 @@ void Pump::closeValve() {
 
 // ============================================================
 
+// The number of consequitive readings required to trigger a switch.
+uint8_t CONSEQ_READING_THRESH = 5;
+
+// How long to wait between each reading in milliseconds
+uint8_t READING_PERIOD_MILLIS = 5000;
+
 Soil::Soil(uint8_t sensorPin, uint8_t calibrationPin) {
   _calibrationPin = calibrationPin;
   _sensorPin = sensorPin;
+  _lastReadingTooDry = false;
+  _consecutiveReadingCount = 0;
+  _soilToDry = false;
 }
 
 boolean Soil::isTooDry() {
@@ -62,17 +71,26 @@ boolean Soil::isTooDry() {
   Serial.print("Sensor: ");
   Serial.println(analogRead(_sensorPin));
 #endif
-  return analogRead(_sensorPin) < analogRead(_calibrationPin);
+  boolean currentReadingTooDry = analogRead(_sensorPin) < analogRead(_calibrationPin);
+  
+  this->_debounceRaeading(currentReadingTooDry);
+  
+  return _soilToDry;
 }
 
-boolean Soil::isWetEnough() {
-#ifdef DEBUG
-  Serial.print("Calibration + Debounce: ");
-  Serial.println(analogRead(_calibrationPin) + SOIL_DEBOUNCE);
-  Serial.print("Sensor: ");
-  Serial.println(analogRead(_sensorPin));
-#endif
-    return analogRead(_sensorPin) > (analogRead(_calibrationPin) + SOIL_DEBOUNCE);
+void Soil::_debounceRaeading(boolean currentReadingTooDry) {
+  if(_lastReadingTooDry == currentReadingTooDry) {
+
+    if(_consecutiveReadingCount >= CONSEQ_READING_THRESH) {
+      _soilToDry = currentReadingTooDry;
+    } else {
+      _consecutiveReadingCount + 1;
+    }
+
+  } else {
+    _consecutiveReadingCount = 0;
+  }
+  _lastReadingTooDry = currentReadingTooDry;
 }
 
 // ============================================================
@@ -97,7 +115,6 @@ void Irrigation::init() {
 void Irrigation::pollIrrigationStatus() {
     boolean reservoirEmpty = reservoir.isEmpty();
     boolean soilTooDry = soil.isTooDry();
-    boolean soilWetEnough = soil.isWetEnough();
     boolean pumping = pump.isPumping();
 
     digitalWrite(_indicatorPin, HIGH);
@@ -112,7 +129,7 @@ void Irrigation::pollIrrigationStatus() {
   }
   
   if(pumping) {
-      if(reservoirEmpty || soilWetEnough) {
+      if(reservoirEmpty || !soilTooDry) {
           pump.stop();
 
           pump.closeValve();
@@ -127,4 +144,7 @@ void Irrigation::pollIrrigationStatus() {
 
   delay(10);
   digitalWrite(_indicatorPin, LOW);
+
+  delay(2000);
+  
 }

@@ -1,5 +1,5 @@
 #ifndef IRRIGATION_h
-#define IRRIGATION_h 1
+#define IRRIGATION_h
 
 #include <Arduino.h>
 
@@ -29,11 +29,20 @@ class Soil {
 public:
   Soil(uint8_t sensorPin, uint8_t calibrationPin);
   boolean isTooDry();
-  boolean isWetEnough();
 private:
   uint8_t _sensorPin;
   uint8_t _calibrationPin;
+  uint8_t _consecutiveReadingCount;
+  boolean _lastReadingTooDry;
+  boolean _soilToDry;
+  void _debounceRaeading(boolean);
 };
+
+// The number of consequitive readings required to trigger a switch.
+extern uint8_t CONSEQ_READING_THRESH;
+
+// How long to wait between each reading
+extern uint8_t READING_PERIOD;
 
 class Irrigation {
 public:

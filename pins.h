@@ -1,3 +1,5 @@
+#ifndef PINS_h
+#define PINS_h
 
 // Pin for flashing on each polling cycle
 uint8_t POLL_LED_PIN = 13;
@@ -19,3 +21,5 @@ uint8_t MOISTURE_CALIB_PIN = A1;
 
 // Analog input pin attached to pointer sensor
 uint8_t MOISTURE_SENSOR_PIN = A0;
+
+#endif
