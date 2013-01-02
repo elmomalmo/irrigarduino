@@ -82,9 +82,11 @@ void Soil::_debounceRaeading(boolean currentReadingTooDry) {
   if(_lastReadingTooDry == currentReadingTooDry) {
 
     if(_consecutiveReadingCount >= CONSEQ_READING_THRESH) {
+      //Set the reuturn value to the current established reading
       _soilToDry = currentReadingTooDry;
     } else {
-      _consecutiveReadingCount + 1;
+      //Avoid overflow by only incrementing _consecutiveReadingCount when it is below the threshold
+      _consecutiveReadingCount += 1;
     }
 
   } else {
