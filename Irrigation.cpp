@@ -39,29 +39,49 @@ void Pump::stop() {
 
 // ============================================================
 
-Soil::Soil(uint8_t sensorPin, uint8_t calibrationPin) {
+Soil::Soil(uint8_t sensorPin, uint8_t calibrationPin, uint8_t sensorPwrPin, uint8_t calibrationPwrPin) {
   _calibrationPin = calibrationPin;
   _sensorPin = sensorPin;
+
+  _calibrationPwrPin = calibrationPwrPin;
+  _sensorPwrPin = sensorPwrPin;
+  
+  _sensorReading = 0;
+  _calibrationReading = 0;
+  
+  pinMode(_sensorPwrPin, OUTPUT);
+  pinMode(_calibrationPwrPin, OUTPUT);
+}
+
+void Soil::_takeReading() {
+  digitalWrite(_sensorPwrPin, HIGH);
+  digitalWrite(_calibrationPwrPin, HIGH);
+  _sensorReading = analogRead(_sensorPin);
+  _calibrationReading = analogRead(_calibrationPin);
+  digitalWrite(_sensorPwrPin, LOW);
+  digitalWrite(_calibrationPwrPin, LOW);
 }
 
 boolean Soil::isTooDry() {
+  _takeReading();
 #ifdef DEBUG
   Serial.print("Calibration: ");
-  Serial.println(analogRead(_calibrationPin));
+  Serial.println(_calibrationReading);
   Serial.print("Sensor: ");
-  Serial.println(analogRead(_sensorPin));
+  Serial.println(_sensorReading);
 #endif
-  return analogRead(_sensorPin) < analogRead(_calibrationPin);
+  return _sensorReading < _calibrationReading;
 }
 
 boolean Soil::isWetEnough() {
+  _takeReading();
 #ifdef DEBUG
   Serial.print("Calibration + Debounce: ");
-  Serial.println(analogRead(_calibrationPin) + SOIL_DEBOUNCE);
+  Serial.println(_calibrationReading + SOIL_DEBOUNCE);
   Serial.print("Sensor: ");
-  Serial.println(analogRead(_sensorPin));
+  Serial.println(_sensorReading);
 #endif
-    return analogRead(_sensorPin) > (analogRead(_calibrationPin) + SOIL_DEBOUNCE);
+    return _sensorReading > (_calibrationReading + SOIL_DEBOUNCE);
 }
 
 // ============================================================
@@ -69,7 +89,7 @@ boolean Soil::isWetEnough() {
 Irrigation::Irrigation() :
   reservoir(RES_SENSOR_PIN),
   pump(PUMP_CTRL_PIN),
-  soil(MOISTURE_SENSOR_PIN, MOISTURE_CALIB_PIN) {
+  soil(MOISTURE_SENSOR_PIN, MOISTURE_CALIB_SENSOR_PIN, MOISTURE_PWR_PIN, MOISTURE_CALIB_PWR_PIN) {
     _indicatorPin = POLL_LED_PIN;
     _waterWarningPin = WATER_WRN_LED_PIN;
 }

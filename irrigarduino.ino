@@ -10,7 +10,7 @@ void loop();
 
 void setup()
 {
-    Wire.begin();
+  Wire.begin();
   irrigation.init();
 }
 

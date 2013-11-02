@@ -24,12 +24,17 @@ private:
 
 class Soil {
 public:
-  Soil(uint8_t sensorPin, uint8_t calibrationPin);
+  Soil(uint8_t sensorPin, uint8_t calibrationPin, uint8_t sensorPwrPin, uint8_t calibrationPwrPin);
   boolean isTooDry();
   boolean isWetEnough();
 private:
+  void _takeReading();
   uint8_t _sensorPin;
   uint8_t _calibrationPin;
+  uint8_t _sensorPwrPin;
+  uint8_t _calibrationPwrPin;
+  uint8_t _sensorReading;
+  uint8_t _calibrationReading;
 };
 
 class Irrigation {
